@@ -1,0 +1,373 @@
+/* ===================================================================
+   css/style.css
+   Narropil Honey — 2025 premium front-end styling
+   Palette: Yellow primary, orange & brown accents
+   Features:
+   - CSS variables and theme
+   - Animated gradients & subtle parallax
+   - Sticky shrinking header with blur
+   - Custom cursor (dot + outline)
+   - Buttons: animated / ripple / micro-interactions
+   - Reveal animations via .reveal .in-view
+   - Product card hover interactions with glints
+   - Gallery grid + lightbox
+   - Modal and quick view styling
+   - Responsive & accessible
+   =================================================================== */
+
+/* -------------------------
+   Root variables (color system)
+   ------------------------- */
+:root{
+  --bg:#fffaf2;
+  --card:#fff8e8;
+  --primary:#ffd42a;     /* bright yellow — main */
+  --primary-600:#ffb400; /* orange */
+  --accent:#ff8c2b;      /* accent orange */
+  --brown:#4b2e1a;       /* deep brown for text */
+  --muted:#7b5a45;
+  --glass:rgba(255,255,255,0.65);
+  --shadow: 0 18px 50px rgba(75,45,20,0.12);
+  --radius:14px;
+  --maxw:1200px;
+  --ease: cubic-bezier(.16,.84,.29,1);
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  font-size:16px;
+}
+
+/* -------------------------
+   Reset & base
+   ------------------------- */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background: radial-gradient(1200px 600px at 10% 20%, rgba(255,212,42,0.06), transparent 12%),
+              linear-gradient(180deg, var(--bg), #fff);
+  color:var(--brown);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
+  line-height:1.5;
+}
+
+/* small utility */
+.wrap{width:calc(100% - 48px);max-width:var(--maxw);margin:0 auto;padding:40px 0}
+
+/* links */
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* -------------------------
+   Custom cursor
+   ------------------------- */
+#cursor{position:fixed;left:0;top:0;pointer-events:none;mix-blend-mode:normal;z-index:9999}
+#cursor-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--brown);transform:translate(-50%,-50%);position:absolute;top:0;left:0;
+  transition:transform .09s linear, background .15s linear;
+  box-shadow:0 2px 6px rgba(75,45,20,0.18);
+}
+#cursor-outline{
+  width:48px;height:48px;border-radius:50%;position:absolute;top:0;left:0;transform:translate(-50%,-50%);border:2px solid rgba(75,45,20,0.12);
+  transition:transform .12s var(--ease), opacity .12s linear;
+}
+
+/* when hovering interactive elements */
+body.cursor-hover #cursor-dot{transform:translate(-50%,-50%) scale(0.8);background:var(--primary-600)}
+body.cursor-hover #cursor-outline{transform:translate(-50%,-50%) scale(1.3);opacity:0.95;border-color:rgba(75,45,20,0.2)}
+
+/* hide cursor on mobile */
+@media (max-width:768px){#cursor{display:none}}
+
+/* -------------------------
+   Header & navigation
+   ------------------------- */
+.header{
+  position:sticky;top:0;z-index:120;backdrop-filter: blur(6px);background:linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.7));
+  border-bottom:1px solid rgba(75,45,20,0.04);transition:all .28s var(--ease);
+}
+.header .wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+#brandLogo{width:58px;height:58px;border-radius:10px;object-fit:cover;box-shadow:var(--shadow)}
+.brand-text{display:flex;flex-direction:column}
+.brand-title{font-weight:800;color:var(--brown);letter-spacing:.2px}
+.brand-sub{font-size:.85rem;color:var(--muted);margin-top:2px}
+
+/* nav */
+.nav-list{display:flex;gap:8px;align-items:center;list-style:none}
+.nav-link{
+  display:inline-block;padding:10px 14px;border-radius:12px;color:var(--brown);font-weight:600;transition:all .18s var(--ease);
+  position:relative;overflow:visible;
+}
+.nav-link::after{
+  content:'';position:absolute;left:50%;bottom:6px;transform:translateX(-50%) scaleX(0);height:3px;background:linear-gradient(90deg,var(--primary),var(--accent));width:48%;border-radius:3px;transition:transform .18s var(--ease);
+}
+.nav-link:hover{transform:translateY(-4px)}
+.nav-link:hover::after{transform:translateX(-50%) scaleX(1)}
+
+/* CTA & socials */
+.header-actions{display:flex;align-items:center;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:10px 16px;border-radius:12px;font-weight:700;cursor:pointer;user-select:none}
+.btn-cta{
+  background:linear-gradient(180deg,var(--primary),var(--primary-600));color:#1b1b1b;border:none;box-shadow:0 14px 40px rgba(255,168,0,0.12);
+  transform:translateZ(0);transition:transform .18s var(--ease), box-shadow .18s var(--ease);
+}
+.btn-cta:hover{transform:translateY(-6px) rotate(-0.2deg);box-shadow:0 20px 60px rgba(255,168,0,0.16)}
+.btn-outline{background:transparent;border:2px solid rgba(75,45,20,0.06);color:var(--brown)}
+.socials{display:flex;gap:8px}
+.social-icon{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.6),rgba(255,255,255,0.4));border:1px solid rgba(75,45,20,0.04);font-weight:800;color:var(--brown)}
+.burger{display:none;background:transparent;border:0;padding:6px;cursor:pointer}
+.burger span{display:block;height:2px;width:22px;background:var(--brown);margin:4px 0;border-radius:2px;transition:transform .18s ease, opacity .18s ease}
+
+/* header shrink when scrolled */
+.header.shrink{padding:0;border-bottom:1px solid rgba(75,45,20,0.06);box-shadow:var(--shadow)}
+.header.shrink #brandLogo{width:46px;height:46px}
+
+/* -------------------------
+   HERO
+   ------------------------- */
+.hero{position:relative;min-height:74vh;display:flex;align-items:center;margin-bottom:24px;border-radius:18px;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background-size:cover;background-position:center;transform:translateZ(0);transition:transform 0.9s var(--ease);will-change:transform}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg, rgba(255,210,50,0.06), rgba(14,6,3,0.24));mix-blend-mode:multiply}
+.hero-inner{display:grid;grid-template-columns:1fr 520px;gap:32px;align-items:center;position:relative;padding:64px 0}
+.hero-left{z-index:3}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(32px,6vw,56px);color:var(--brown);line-height:1.02;margin-bottom:12px}
+.hero-lead{color:var(--muted);max-width:60ch;margin-bottom:18px}
+.hero-ctas{display:flex;gap:12px;align-items:center;margin-bottom:18px}
+.trust-row{display:flex;gap:10px;margin-top:16px}
+.trust-pill{background:linear-gradient(180deg,#fff8e2,#fff3d6);padding:8px 10px;border-radius:999px;font-weight:700;color:var(--brown);border:1px solid rgba(75,45,20,0.04)}
+
+/* hero-right micro cards */
+.hero-cards{display:grid;gap:12px;grid-template-columns:1fr;transform:translateZ(0)}
+.hc-card{display:flex;gap:12px;align-items:center;background:linear-gradient(180deg,#fff,#fff5e8);border-radius:12px;padding:10px;border:1px solid rgba(75,45,20,0.04);box-shadow:0 14px 40px rgba(75,45,20,0.06);transition:transform .32s var(--ease), box-shadow .32s var(--ease)}
+.hc-card img{width:86px;height:86px;object-fit:cover;border-radius:10px}
+.hc-card h4{font-size:1rem;color:var(--brown)}
+.hc-card p{font-size:.9rem;color:var(--muted)}
+
+/* hero decorative svg */
+.hero-deco{position:absolute;right:40px;bottom:10px;width:160px;opacity:.9;z-index:2;transform:translateZ(0);filter:drop-shadow(0 8px 22px rgba(0,0,0,0.08))}
+
+/* -------------------------
+   Sections / utilities
+   ------------------------- */
+.section{padding:64px 0}
+.lead{color:var(--muted);margin-top:8px}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease), transform .6s var(--ease)}
+.reveal.in-view{opacity:1;transform:none}
+
+/* ABOUT layout */
+.about{display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:start}
+.about-card{background:linear-gradient(180deg,#fff,#fff7ea);border-radius:12px;border:1px solid rgba(75,45,20,0.04);box-shadow:var(--shadow);overflow:hidden}
+.about-card img{width:100%;height:220px;object-fit:cover}
+.about-card-body{padding:16px}
+
+/* stats */
+.stats-row{display:flex;gap:10px;margin-top:18px}
+.stat{background:linear-gradient(180deg,#fff8e4,#fff3d6);padding:12px;border-radius:10px;border:1px solid rgba(75,45,20,0.04);text-align:center;flex:1}
+.stat-num{font-weight:800;color:var(--accent);font-size:1.3rem}
+.stat-label{font-size:.9rem;color:var(--muted);margin-top:6px}
+
+/* -------------------------
+   Products grid & cards
+   ------------------------- */
+.products-head{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.product-filters{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.pf{background:transparent;border:2px solid rgba(75,45,20,0.05);padding:8px 12px;border-radius:999px;cursor:pointer;font-weight:700;color:var(--brown);transition:all .18s var(--ease)}
+.pf.active{background:var(--primary);border-color:var(--primary-600);color:#111;box-shadow:0 12px 32px rgba(255,164,0,0.08)}
+
+.products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:20px}
+
+/* product card */
+.product-card{background:linear-gradient(180deg,#fff,#fffaf0);border-radius:16px;overflow:hidden;border:1px solid rgba(75,45,20,0.04);box-shadow:0 18px 48px rgba(75,45,20,0.06);transition:transform .32s var(--ease), box-shadow .32s var(--ease)}
+.product-card:focus{outline:3px solid rgba(255,212,42,0.12)}
+.pc-media{position:relative;overflow:hidden}
+.pc-media img{width:100%;height:220px;object-fit:cover;display:block;transition:transform .8s var(--ease)}
+.product-card:hover .pc-media img{transform:scale(1.08)}
+
+/* micro glint overlay on hover */
+.product-card::after{
+  content:"";
+  position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(120deg, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.06) 48%, rgba(255,255,255,0.0) 100%);
+  transform:translateX(-120%);transition:transform .9s var(--ease);
+}
+.product-card:hover::after{transform:translateX(120%)}
+
+/* quick button */
+.pc-quick{position:absolute;right:12px;bottom:12px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,0.9);border:1px solid rgba(75,45,20,0.06);font-weight:700;cursor:pointer;transition:transform .18s var(--ease)}
+.pc-body{padding:14px}
+.pc-body h3{color:var(--brown);margin-bottom:6px}
+.pc-desc{color:var(--muted);margin-bottom:8px}
+.pc-meta{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.price{font-weight:800;color:var(--accent)}
+.pc-actions{display:flex;gap:8px;align-items:center}
+
+/* -------------------------
+   Modal quick view
+   ------------------------- */
+.modal-quick{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:200;pointer-events:none;opacity:0;transition:opacity .18s ease;backdrop-filter: blur(4px)}
+.modal-quick.open{pointer-events:auto;opacity:1}
+.modal-quick-inner{width:min(1100px,94%);background:linear-gradient(180deg,#fff,#fff8e6);border-radius:16px;box-shadow:0 30px 80px rgba(30,20,10,0.18);overflow:hidden}
+.modal-close{position:absolute;right:22px;top:18px;border:0;background:transparent;font-size:30px;color:var(--brown);cursor:pointer}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:20px;align-items:center}
+.quick-media img{width:100%;height:420px;object-fit:cover;border-radius:10px}
+.quick-meta{padding:10px}
+.quick-price{font-weight:900;color:var(--primary);font-size:1.5rem;margin:12px 0}
+
+/* -------------------------
+   Gallery grid + lightbox
+   ------------------------- */
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.gallery-item{border-radius:12px;overflow:hidden;cursor:pointer;position:relative}
+.gallery-item img{width:100%;height:200px;object-fit:cover;display:block;transition:transform .28s var(--ease)}
+.gallery-item:hover img{transform:scale(1.05)}
+
+/* lightbox */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.82);display:flex;align-items:center;justify-content:center;z-index:260;opacity:0;pointer-events:none;transition:opacity .18s ease}
+.lightbox.open{opacity:1;pointer-events:auto}
+.lb-close{position:absolute;top:18px;right:18px;background:transparent;color:#fff;border:0;font-size:34px;cursor:pointer}
+.lb-caption{position:absolute;left:50%;transform:translateX(-50%);bottom:18px;color:#fff;font-weight:600;background:rgba(0,0,0,0.28);padding:6px 10px;border-radius:8px}
+
+/* -------------------------
+   Contact & footer
+   ------------------------- */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+.contact-card{padding:18px;border-radius:12px;background:linear-gradient(180deg,#fff,#fff6e6);border:1px solid rgba(75,45,20,0.04)}
+.contact-form{display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:12px;background:#fff;border:1px solid rgba(75,45,20,0.04)}
+.contact-form label{display:flex;flex-direction:column;gap:6px;font-weight:700;color:var(--brown)}
+.contact-form input, .contact-form textarea{padding:10px;border-radius:10px;border:1px solid rgba(75,45,20,0.06);font-size:1rem}
+.contact-actions{display:flex;align-items:center;gap:12px}
+
+/* whatsapp big CTA */
+.whatsapp-fab{position:fixed;right:18px;bottom:18px;background:linear-gradient(180deg,#25D366,#128C7E);color:#fff;padding:12px 14px;border-radius:999px;font-weight:800;z-index:300;box-shadow:0 18px 50px rgba(36,120,59,0.18);display:flex;align-items:center;gap:10px}
+
+/* footer */
+.footer{padding:28px 0;border-top:1px solid rgba(75,45,20,0.04);margin-top:28px;background:linear-gradient(180deg,#fff,#fff7ea);color:var(--muted)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:20px;align-items:start}
+.footer-logo{width:72px;height:72px;object-fit:cover;border-radius:10px}
+
+/* -------------------------
+   Transitions / small helpers
+   ------------------------- */
+.btn-animated{position:relative;overflow:hidden}
+.btn-animated::after{
+  content:"";position:absolute;inset:0;background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 40%, transparent 80%);
+  transform:translateX(-100%);transition:transform .9s var(--ease)
+}
+.btn-animated:hover::after{transform:translateX(100%)}
+
+/* -------------------------
+   Responsive
+   ------------------------- */
+@media (max-width:1100px){
+  .products-grid{grid-template-columns:repeat(2,1fr)}
+  .gallery-grid{grid-template-columns:repeat(2,1fr)}
+  .hero-inner{grid-template-columns:1fr 360px}
+}
+@media (max-width:768px){
+  .nav-list{display:none}
+  .burger{display:block}
+  .brand-title{font-size:1rem}
+  .hero-inner{grid-template-columns:1fr}
+  .hero-right{display:none}
+  .products-grid{grid-template-columns:1fr}
+  .about{grid-template-columns:1fr}
+  .wrap{padding:22px 16px}
+  .gallery-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:420px){
+  .gallery-grid{grid-template-columns:1fr}
+  .stat{font-size:.85rem}
+  .hero-title{font-size:26px}
+}
+.social-icon img {
+    width: 30px;          /* adjust width as needed */
+    height: 30px;         /* adjust height as needed */
+    object-fit: contain;   /* keep icon proportions */
+    transition: transform 0.3s ease;  /* for hover animation */
+}
+
+/* Optional: add hover effect */
+.social-icon img:hover {
+    transform: scale(1.2);  /* icon grows slightly on hover */
+}
+/* ================================
+   BRAND LOGO – FULL VISIBILITY
+   ================================ */
+
+.brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    gap: 12px;
+}
+
+/* Circular container */
+.brand-logo {
+    width: 64px;              /* adjust size here */
+    height: 64px;
+    border-radius: 50%;
+    background: #fff;         /* clean background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;         /* keeps circular shape */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Image itself */
+.brand-logo img {
+    max-width: 100%;           /* ensures full logo visible */
+    max-height: 100%;
+    object-fit: contain;      /* 🔥 KEY FIX – NO CUTTING */
+    display: block;
+}
+
+/* Text styles */
+.brand-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #5a2d0c;            /* brown */
+}
+
+.brand-sub {
+    font-size: 0.8rem;
+    color: #f4a100;            /* honey yellow */
+    letter-spacing: 1px;
+}
+
+/* Hover effect (2025-style) */
+.brand:hover .brand-logo {
+    transform: scale(1.05);
+    transition: 0.3s ease;
+}
+/* ================================
+   FOOTER LOGO – FULL VISIBILITY
+   ================================ */
+
+.footer-logo-wrap {
+    width: 80px;              /* control size here */
+    height: 80px;
+    background: #fff;
+    border-radius: 50%;       /* keeps consistent branding */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+/* The image itself */
+.footer-logo {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;      /* 🔥 KEY FIX – no cropping */
+    display: block;
+}
+
+
+
+
+
+
+
+
